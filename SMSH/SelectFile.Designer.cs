@@ -38,16 +38,17 @@
             this.FileIntroduction = new System.Windows.Forms.TextBox();
             this.FileSize = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
+            this.Error = new System.Windows.Forms.Label();
             this.Openfile = new System.Windows.Forms.OpenFileDialog();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // SelectFileButton
             // 
             this.SelectFileButton.Font = new System.Drawing.Font("微软雅黑", 12.75F);
-            this.SelectFileButton.Location = new System.Drawing.Point(13, 13);
+            this.SelectFileButton.Location = new System.Drawing.Point(12, 13);
             this.SelectFileButton.Name = "SelectFileButton";
-            this.SelectFileButton.Size = new System.Drawing.Size(88, 158);
+            this.SelectFileButton.Size = new System.Drawing.Size(88, 81);
             this.SelectFileButton.TabIndex = 0;
             this.SelectFileButton.Text = "选择文件";
             this.SelectFileButton.UseVisualStyleBackColor = true;
@@ -99,6 +100,7 @@
             // 
             // FilePath
             // 
+            this.FilePath.Enabled = false;
             this.FilePath.Location = new System.Drawing.Point(203, 12);
             this.FilePath.Name = "FilePath";
             this.FilePath.Size = new System.Drawing.Size(353, 21);
@@ -136,24 +138,37 @@
             this.label5.TabIndex = 9;
             this.label5.Text = "KB";
             // 
-            // label6
+            // Error
             // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("微软雅黑", 10F);
-            this.label6.ForeColor = System.Drawing.Color.Red;
-            this.label6.Location = new System.Drawing.Point(332, 129);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(247, 20);
-            this.label6.TabIndex = 10;
-            this.label6.Text = "文件不可以超过500M（1048576KB）";
-            this.label6.Visible = false;
+            this.Error.AutoSize = true;
+            this.Error.Font = new System.Drawing.Font("微软雅黑", 10F);
+            this.Error.ForeColor = System.Drawing.Color.Red;
+            this.Error.Location = new System.Drawing.Point(332, 129);
+            this.Error.Name = "Error";
+            this.Error.Size = new System.Drawing.Size(247, 20);
+            this.Error.TabIndex = 10;
+            this.Error.Text = "文件不可以超过500M（1048576KB）";
+            this.Error.Visible = false;
+            // 
+            // button1
+            // 
+            this.button1.Enabled = false;
+            this.button1.Font = new System.Drawing.Font("微软雅黑", 15F);
+            this.button1.Location = new System.Drawing.Point(13, 100);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(88, 49);
+            this.button1.TabIndex = 11;
+            this.button1.Text = "发送";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // SelectFile
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(585, 204);
-            this.Controls.Add(this.label6);
+            this.ClientSize = new System.Drawing.Size(585, 172);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.Error);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.FileSize);
             this.Controls.Add(this.FileIntroduction);
@@ -183,7 +198,8 @@
         private System.Windows.Forms.TextBox FileIntroduction;
         private System.Windows.Forms.TextBox FileSize;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label Error;
         private System.Windows.Forms.OpenFileDialog Openfile;
+        private System.Windows.Forms.Button button1;
     }
 }

@@ -9,36 +9,19 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Runtime.Serialization.Formatters;
 using System.Windows.Forms;
+using System.Net.Sockets;
+using System.Threading;
 
 namespace SMSH
 {
-    struct FormTag
-    {
-        public FormTag(string filename, string filepath, string sendtimingname, string introduction, long length)
-        {
-            this.filename = filename;
-            this.filepath = filepath;
-            this.sendtimingname = sendtimingname;
-            this.introduction = introduction;
-            this.length = length;
-        }
-
-        string filename;
-        string filepath;
-        string sendtimingname;
-        string introduction;
-        long length;
-
-        public string Filename { get => filename; set => filename = value; }
-        public string Filepath { get => filepath; set => filepath = value; }
-        public string Sendtimingname { get => sendtimingname; set => sendtimingname = value; }
-        public string Introduction { get => introduction; set => introduction = value; }
-        public long Length { get => length; set => length = value; }
-    }
     public partial class SelectFile : Form
     {
-        public SelectFile()
+        Stream stream;
+        Socket socket;
+        const int BUFSIZE = 1024 * 8;
+        public SelectFile(Socket sock)
         {
+            socket = sock;
             InitializeComponent();
         }
 
@@ -48,10 +31,37 @@ namespace SMSH
             Openfile.Multiselect = false;
             if(Openfile.ShowDialog() == DialogResult.OK)
             {
-                FilePath = Openfile.FileName;
-                
+                stream = new FileStream(Openfile.FileName, FileMode.Open);
+                FilePath.Text = Openfile.FileName;
+                SendTimingName.Text = Path.GetFileName(Openfile.FileName);
+                FileSize.Text = (stream.Length / 1024).ToString();
+                if (stream.Length / 1024 > 1048576)
+                    Error.Show();
+                else
+                    Error.Hide();
             }
+            button1.Enabled = true;
+        }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var sendst = Encoding.UTF8.GetBytes($"File:{{\"FileName\":\"{SendTimingName.Text}\",\"Introduction\":\"{FileIntroduction.Text}\",\"Size\":{stream.Length.ToString()},\"Guid\":\"{Form1.guid}\"}}");
+            socket.Send(sendst,sendst.Length,SocketFlags.None);
+            button1.Enabled = false;
+            SendFileData();
+        }
+
+        private void SendFileData()
+        {
+            byte[] data = new byte[BUFSIZE];
+            if (stream.Position == stream.Length)
+            {
+                stream.Close();
+                return;
+            }
+            int len = stream.Read(data, 0, BUFSIZE);
+            socket.Send(data,len,SocketFlags.None);
+            SendFileData();
         }
     }
 }
