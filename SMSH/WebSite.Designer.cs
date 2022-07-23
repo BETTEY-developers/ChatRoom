@@ -1,6 +1,6 @@
 ﻿namespace SMSH
 {
-    partial class FileManger
+    partial class WebSite
     {
         /// <summary>
         /// Required designer variable.
@@ -28,31 +28,34 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.List = new System.Windows.Forms.FlowLayoutPanel();
+            this.webBrowser = new System.Windows.Forms.WebBrowser();
             this.SuspendLayout();
             // 
-            // List
+            // webBrowser
             // 
-            this.List.Location = new System.Drawing.Point(13, 13);
-            this.List.Name = "List";
-            this.List.Size = new System.Drawing.Size(775, 425);
-            this.List.TabIndex = 0;
-            this.List.Paint += new System.Windows.Forms.PaintEventHandler(this.List_Paint);
+            this.webBrowser.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.webBrowser.IsWebBrowserContextMenuEnabled = false;
+            this.webBrowser.Location = new System.Drawing.Point(0, 0);
+            this.webBrowser.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webBrowser.Name = "webBrowser";
+            this.webBrowser.Size = new System.Drawing.Size(800, 450);
+            this.webBrowser.TabIndex = 0;
+            this.webBrowser.Url = new System.Uri("about:blank", System.UriKind.Absolute);
             // 
-            // FileManger
+            // WebSite
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.List);
-            this.Name = "FileManger";
-            this.Text = "FileManger";
+            this.Controls.Add(this.webBrowser);
+            this.Name = "WebSite";
+            this.Text = "WebSite";
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.FlowLayoutPanel List;
+        private System.Windows.Forms.WebBrowser webBrowser;
     }
 }

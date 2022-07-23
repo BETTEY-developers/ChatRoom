@@ -6,7 +6,6 @@ namespace SmshControl
 {
     public partial class FileControl : UserControl
     {
-        public event EventHandler InfoClicked;
         public string FileName {
             get
             {
@@ -14,7 +13,7 @@ namespace SmshControl
             }
             set
             {
-                SetPicture(System.IO.Path.GetExtension(value));
+                SetPicture(System.IO.Path.GetExtension(value).Replace(".",""));
                 NameFile.Text = value;
             } 
         }

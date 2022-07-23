@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Text;
-using System.Threading.Tasks;
-using System.Threading;
 using System.Net.Sockets;
 using System.Net;
 using System.Windows.Forms;
 using System.Text.Json;
+using System.Diagnostics;
+
 namespace SMSH
 {
     public partial class Form1 : Form
     {
-        internal static Guid guid = Guid.NewGuid();
-        const int ByteNums = 0b10000000000;
-        public static Socket socket = null;
+        static public Group group;
         public Form1()
         {
             InitializeComponent();
@@ -20,100 +18,57 @@ namespace SMSH
             SendFile.Enabled = false;
             Exit.Enabled = false;
             menuStrip1.Enabled = false;
-            foreach(var v in Dns.GetHostAddresses(Dns.GetHostName()))
-            {
-                PutMsg(v.ToString());
-            }
-        }
-        private async void Link_Click(object sender, EventArgs e)
-        {
-            Task task = new Task(() =>
-            {
-                try
-                {
-                    socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-#if DEBUG
-                    socket.Connect(IPAddress.Parse("127.0.0.1"), 13002);
-#else
-            socket.Connect(new IPEndPoint(IPAddress.Parse("103.46.128.49"),int.Parse(Port.Text)));
-#endif
-                    socket.Send(Encoding.Default.GetBytes($"{{\"Name\":\"{Namef.Text}\",\"Guid\":\"{guid}\"}}"));
-                    Exit.Enabled = true;
-                    Link.Enabled = false;
-                    menuStrip1.Enabled = true;
-                    SendFile.Enabled = true;
-                    Thread recv = new Thread(RecvMsg);
-                    recv.IsBackground = true;
-                    recv.Start();
-                }
-                catch (SocketException ex)
-                {
-                    System.Windows.Forms.MessageBox.Show(this, "服务器连接不上哦，您可以检查一下网络或者检查端口号是否正常，也许是服务器未开启哦。(错误代码:" + ex.SocketErrorCode.ToString() + ")",
-                                                         "错误",
-                                                         MessageBoxButtons.OK,
-                                                         MessageBoxIcon.Error
-                    );
-                }
-            });
-            task.Start();
+            group = new Group();
+            group.PutMsg += PutMsg;
+            group.PutError += PutError;
+            group.SiteDownloadDone += Group_SiteDownloadDone;
         }
 
-        public void PutMsg(string Msg)
+        private void PutError(object sender, string e)
         {
-            MessageBox.AppendText(Msg + Environment.NewLine);
+            MessageBox.AppendText(e);
+            MessageBox.SelectedText = e;
+            MessageBox.SelectionColor = System.Drawing.Color.Red;
         }
-        private void RecvMsg()
+
+        private void Group_SiteDownloadDone(object sender, string e)
         {
-            if (socket.Connected)
-            {
-                try
-                {
-                    byte[] msg = new byte[500 * ByteNums];
-                    int len = socket.Receive(msg);
-                    string str = Encoding.UTF8.GetString(msg, 0, len);
-                    if(str.StartsWith("File:"))
-                    {
-                        FileInfo fileInfo = JsonSerializer.Deserialize<FileInfo>(str.Replace("File:", ""));
-                        Static.filelist.Add(fileInfo);
-                        return;
-                    }
-                    PutMsg(str.Replace("{#NewLine}", Environment.NewLine));
-                }
-                catch (SocketException sx)
-                {
-                    PutMsg("Error:" + sx.Message);
-                    PutMsg("ErrorCode:" + sx.ErrorCode);
-                    return;
-                }
-                RecvMsg();
-            }
-            else
-            {
-                return;
-            }
+            new WebSite(e).Show();
         }
-        public void Send(string str)
+
+        private void PutMsg(object sender, string e)
         {
-            socket.Send(Encoding.UTF8.GetBytes(str));
+            MessageBox.AppendText(e + Environment.NewLine);
         }
+
+        private async void Link_Click(object sender, EventArgs e)
+        {
+            group = new Group();
+            group.PutMsg += PutMsg;
+            group.PutError += PutError;
+            group.SiteDownloadDone += Group_SiteDownloadDone;
+#if DEBUG
+            group.Connect("127.0.0.1", 13002, Namef.Text);
+#else
+            group.Connect("103.46.128.49", 13002, Namef.Text);
+#endif
+            Exit.Enabled = true;
+            Link.Enabled = false;
+            menuStrip1.Enabled = true;
+            SendFile.Enabled = true;
+        }
+        
         private void Sed_Click(object sender, EventArgs e)
         {
             /*
              * {Guid:*,Msg:"{"FileName":"test.txt","Content":"This is test content."}"}
              */
-            Send("Msg:{\"Guid\":\"" + guid + "\",\"Msg\":\"" + MsgText.Text + "\",\"IsFile\":\"False\"}");
+            group.Send(MsgText.Text.Replace("\n","{#NewLine}"));
             MsgText.Clear();
         }
         public void Exitf()
         {
-            if (socket != null)
-            {
-                if (socket.Connected)
-                {
-                    socket.Send(Encoding.Default.GetBytes("Exit:" + guid));
-                    socket.Close();
-                }
-            }
+            group.Exit();
         }
         private void Exit_Click(object sender, EventArgs e)
         {
@@ -133,17 +88,16 @@ namespace SMSH
         {
             if (e.Control == true && e.KeyCode == Keys.Enter)
             {
-                
+
             }
             else if (e.KeyCode == Keys.Enter)
             {
                 string Text = MsgText.Text;
                 Text = Text.Replace(Environment.NewLine, "{#NewLine}");
-                Send("Msg:{\"Guid\":\"" + guid + "\",\"Msg\":\"" + Text + "\"}");
+                group.Send(Text);
                 MsgText.Clear();
-                e.Handled = false;
             }
-            
+
         }
 
         private void synchronousPort_Click(object sender, EventArgs e)
@@ -153,7 +107,7 @@ namespace SMSH
 
         private void SendFile_Click(object sender, EventArgs e)
         {
-            SelectFile selectFile = new SelectFile(socket);
+            SelectFile selectFile = new SelectFile(group);
             selectFile.ShowDialog();
         }
 
@@ -161,6 +115,21 @@ namespace SMSH
         {
             FileManger fileManger = new FileManger();
             fileManger.ShowDialog();
+        }
+
+        private void MessageBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void 访问我们的网站ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            group.VisitWebSite();
+        }
+
+        private void Emoji_Click(object sender, EventArgs e)
+        {
+            new EmojiForm().Show();
         }
     }
 }

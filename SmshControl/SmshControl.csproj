@@ -54,6 +54,18 @@
     <Compile Include="FileControl.Designer.cs">
       <DependentUpon>FileControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="MessagePop.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MessagePop.Designer.cs">
+      <DependentUpon>MessagePop.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MessageWindow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MessageWindow.Designer.cs">
+      <DependentUpon>MessageWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -74,6 +86,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FileControl.resx">
       <DependentUpon>FileControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MessagePop.resx">
+      <DependentUpon>MessagePop.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MessageWindow.resx">
+      <DependentUpon>MessageWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

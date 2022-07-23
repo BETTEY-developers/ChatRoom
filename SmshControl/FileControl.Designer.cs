@@ -106,7 +106,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Button Info;
+        public System.Windows.Forms.Button Info;
         private System.Windows.Forms.PictureBox Picture;
         private System.Windows.Forms.TextBox NameFile;
         private System.Windows.Forms.TextBox IntroductionFile;

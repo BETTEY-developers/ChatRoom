@@ -1,6 +1,6 @@
 ﻿namespace SMSH
 {
-    partial class FileManger
+    partial class EmojiForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,31 +28,34 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.List = new System.Windows.Forms.FlowLayoutPanel();
+            this.emojiView = new System.Windows.Forms.ListView();
             this.SuspendLayout();
             // 
-            // List
+            // emojiView
             // 
-            this.List.Location = new System.Drawing.Point(13, 13);
-            this.List.Name = "List";
-            this.List.Size = new System.Drawing.Size(775, 425);
-            this.List.TabIndex = 0;
-            this.List.Paint += new System.Windows.Forms.PaintEventHandler(this.List_Paint);
+            this.emojiView.Font = new System.Drawing.Font("Segoe UI Emoji", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.emojiView.HideSelection = false;
+            this.emojiView.Location = new System.Drawing.Point(12, 12);
+            this.emojiView.Name = "emojiView";
+            this.emojiView.Size = new System.Drawing.Size(310, 337);
+            this.emojiView.TabIndex = 0;
+            this.emojiView.UseCompatibleStateImageBehavior = false;
+            this.emojiView.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
             // 
-            // FileManger
+            // EmojiForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.List);
-            this.Name = "FileManger";
-            this.Text = "FileManger";
+            this.ClientSize = new System.Drawing.Size(334, 361);
+            this.Controls.Add(this.emojiView);
+            this.Name = "EmojiForm";
+            this.Text = "EmojiForm";
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.FlowLayoutPanel List;
+        private System.Windows.Forms.ListView emojiView;
     }
 }

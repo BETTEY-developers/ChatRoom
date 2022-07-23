@@ -7,39 +7,53 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="590" Width="1039" WindowStartupLocation="CenterScreen" WindowStyle="None">
     <Grid>
-        <StackPanel Height="40" Margin="0,0,0,535" Background="Blue">
-            <StackPanel.Effect>
-                <DropShadowEffect ShadowDepth="0" BlurRadius="10" Opacity="0.8"/>
-            </StackPanel.Effect>
+        <StackPanel Height="40" Margin="0,0,0,535" Background="Blue" Name="Tid">
             <StackPanel Orientation="Horizontal" Margin="0,0,10,0" HorizontalAlignment="Left">
                 <Label Name="WidTile" Height="40" Foreground="White" FontSize="28" FontFamily="Microsoft Yahei"></Label>
             </StackPanel>
             <StackPanel Margin="0,-40,50,0" HorizontalAlignment="Right" Orientation="Horizontal" Height="40" Width="40" Mouse.MouseDown="StackPanel_MouseDown" Cursor="Hand">
-                <Button Width="40" Height="40" Cursor="Hand" Click="Button_Click" Mouse.MouseEnter="Button_MouseEnter">
+                <Button Width="40" Height="40" Cursor="Hand" Click="Button_Click">
                     <Button.Template>
                         <ControlTemplate>
-                            <Rectangle Width="40" Height="4" Fill="White"/>
-                        </ControlTemplate>
-                    </Button.Template>
-                </Button>
-                <Button Width="40" Height="40" Cursor="Hand" Click="Button_Click_1" Mouse.MouseEnter="Button_MouseEnter_1">
-                    <Button.Template>
-                        <ControlTemplate>
-                            <Rectangle Height="3" Width="5" Fill="White"/>
+                            <Grid>
+                                <Grid Background="Blue" Width="40" Height="40" />
+                                <Rectangle Width="40" Height="4" Fill="White"/>
+                            </Grid>
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
             </StackPanel>
-            <StackPanel Margin="0,-40,1,0" HorizontalAlignment="Right" Orientation="Horizontal" Height="40" Width="40" Mouse.MouseDown="StackPanel_MouseDown" Cursor="Hand">
-                <Button Width="40" Height="40" Cursor="Hand" Click="Button_Click_1" Mouse.MouseEnter="Button_MouseEnter_1">
+            <StackPanel Margin="0,-40,1,0" HorizontalAlignment="Right" Orientation="Horizontal" Height="40" Width="40" Cursor="Hand">
+                <Button Width="40" Height="40" Cursor="Hand" Click="Button_Click_1">
                     <Button.Template>
                         <ControlTemplate>
-                            <Rectangle Height="35" Width="35" Stroke="White" StrokeThickness="5"/>
+                            <Grid x:Name="Guid">
+                                <Rectangle Width="40" Height="40" Fill="Blue" />
+                                <Rectangle Width="40" Height="40" Fill="Red" Opacity="0" Name="R">
+                                    <Rectangle.Triggers>
+                                        <EventTrigger RoutedEvent="Rectangle.MouseEnter" >
+                                            <BeginStoryboard Name="Red">
+                                                <Storyboard>
+                                                    <DoubleAnimation 
+                                                        Storyboard.TargetName="R"
+                                                        Storyboard.TargetProperty="Opacity"
+                                                        From="0.0" To="1.0" Duration="0:0:0.5"
+                                                        AutoReverse="True"
+                                                    />
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </EventTrigger>
+                                        <EventTrigger RoutedEvent="Rectangle.MouseLeave">
+                                        </EventTrigger>
+                                    </Rectangle.Triggers>
+                                </Rectangle>
+                                <Line X1="0" Y1="0" X2="40" Y2="40" Stroke="White" StrokeThickness="5"></Line>
+                                <Line X1="40" Y1="0" X2="0" Y2="40" Stroke="White" StrokeThickness="5"></Line>
+                            </Grid>
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
             </StackPanel>
         </StackPanel>
-        <Rectangle HorizontalAlignment="Left" Height="40" Margin="481,209,0,0" Stroke="Black" VerticalAlignment="Top" Width="40" StrokeThickness="3" />
     </Grid>
 </Window>

@@ -3,13 +3,19 @@ using System.Net.Sockets;
 using System.Text.Json;
 using System.Text;
 using System.Diagnostics;
-#pragma warning disable
+using System.Drawing;
+using System.Windows.Input;
+using System.Collections.Generic;
+    #pragma warning disable
+
 
 namespace Server
 {
-    public struct ID
+    #region Json格式实体化定义类
+    public class ID
     {
-        public long Id { get; set; }
+        public string Start { get; set; }
+        public string Id { get; set; }
     }
     public class UserInfo
     {
@@ -21,12 +27,12 @@ namespace Server
     {
         public FileInfo()
         {
-            Id = DateTime.Now.Ticks;
+            Id = DateTime.Now.Ticks.ToString();
         }
         public string FileName { get; set; }
         public string Introduction { get; set; }
         public long Size { get; set; }
-        public long Id { get; private set; }
+        public string Id { get; private set; }
         public string Guid { get; set; }
     }
     public class Message
@@ -34,6 +40,40 @@ namespace Server
         public string Guid { get; set; }
         public string Msg { get; set; }
     }
+
+    
+    public class RtfText
+    {
+        public struct Color
+        {
+            public int Red { get; set; }
+            public int Green { get; set; }
+            public int Blue { get; set; }
+        }
+        public struct FontInfo
+        {
+            public string FontFamliy { get; set; }
+            public int Height { get; set; }
+            public float Size { get; set; }
+            public bool Italic { get; set; }
+            public bool Underline { get; set; }
+            public bool Bold { get; set; } 
+        }
+        public class RtfBlock
+        {
+            public int StartIndex { get; set; }
+            public int EndIndex { get; set; }
+            public Color Color { get; set; }
+            public FontInfo FontInfo { get; set; }
+            public Color BackColor { get; set; }
+            
+        }
+        public List<RtfBlock> Blocks = new List<RtfBlock>();
+        public RtfBlock AllFont { get; set; }
+        public string OriginalString { get; set; }
+        public int TextAlign { get; set; }
+    }
+    #endregion
     public class Server
     {
         Socket cs = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -41,11 +81,20 @@ namespace Server
         List<Socket> sockets = new List<Socket>();
         List<FileInfo> fileInfos = new List<FileInfo>();
         FileStreamOptions FileStreamOptions = new FileStreamOptions();
-        StreamWriter log;
+        FileStream log;
         StreamReader json;
+        string flog = "";
+
+        public void Manger(string str)
+        {
+            string v = str.Split(':')[1];
+            if (v == "Close")
+            {
+                Close();
+            }
+        }
         public Server()
         {
-            //log = new StreamWriter(File.Create(("log_" + DateTime.Now.ToString() + ".svr.log").Replace("/", "_").Replace(" ", "_")));
             if (!File.Exists("FileData.json"))
                 File.Create("FileData.json");
             else
@@ -60,6 +109,7 @@ namespace Server
         public void WriteLine(string line)
         {
             Console.WriteLine($"[{Now()}] " + line);
+            flog += $"[{Now()}] " + line;
         }
         public void Start()
         {
@@ -84,7 +134,7 @@ namespace Server
                 {
                     foreach(FileInfo fileInfo in fileInfos)
                     {
-                        acc.Send(Encoding.UTF8.GetBytes($"{{\"FileName\":\"{fileInfo.FileName}\",\"Id\":{fileInfo.Id},\"Name\":\"{Getname(fileInfo.Guid)}\",\"Size\":{fileInfo.Size}}}"));
+                        acc.Send(Encoding.UTF8.GetBytes($"{{\"FileName\":\"{fileInfo.FileName}\",\"Id\":\"{fileInfo.Id}\",\"Name\":\"{Getname(fileInfo.Guid)}\",\"Size\":{fileInfo.Size}}}"));
                     }
                 }
                 sockets.Add(acc);
@@ -110,6 +160,7 @@ namespace Server
             }
             throw null;
         }
+        [Obsolete("The mothod is OBSOLETE!")]
         private void ReceMsg(object objects)
         {
             try
@@ -142,20 +193,33 @@ namespace Server
                     FileInfo fileInfo = (FileInfo)JsonSerializer.Deserialize(str.Replace("File:", ""), typeof(FileInfo));
                     fileInfos.Add(fileInfo);
                     string Name = Getname(fileInfo.Guid);
-                    BoradClient($"File:{{\"FileName\":\"{fileInfo.FileName}\",\"Id\":{fileInfo.Id},\"Name\":\"{Name}\",\"Size\":{fileInfo.Size}}}");
+                    BoradClient($"{{\"FileName\":\"{fileInfo.FileName}\",\"Id\":\"{fileInfo.Id}\",\"Name\":\"{Name}\",\"Size\":{fileInfo.Size}}}","File:");
                     ReceFile(socket);
                 }
-                else if(str.StartsWith("Download:"))
+                else if(str.StartsWith("ID:"))
                 {
                     ID id = new ID();
-                    id = (ID)JsonSerializer.Deserialize(str.Replace("Download:", ""),typeof(ID));
-                    foreach(FileInfo fileInfo in fileInfos)
+                    id = (ID)JsonSerializer.Deserialize(str.Replace("ID:", ""),typeof(ID));
+                    if (id.Start == "DownloadFile")
                     {
-                        if(fileInfo.Id == id.Id)
+                        var beginSendFileData = Encoding.UTF8.GetBytes("beginSendFile");
+                        socket.Send(beginSendFileData, beginSendFileData.Length, SocketFlags.None);
+                        foreach (FileInfo fileInfo in fileInfos)
                         {
-                            SendFile(fileInfo,socket);
+                            if (fileInfo.Id == id.Id)
+                            {
+                                SendFile(fileInfo, socket);
+                            }
                         }
                     }
+                    else if(id.Start == "GetWebSite")
+                    {
+                        MyWebSite.SendFile(socket);
+                    }
+                }
+                else if(str.StartsWith("Manger:"))
+                {
+                    
                 }
                 else if(str.StartsWith("Msg:"))
                 {
@@ -172,7 +236,6 @@ namespace Server
                 Console.WriteLine("[Error] " + ex.Message);
                 Process.GetCurrentProcess().Kill();
             }
-
         }
         public byte[] GetByte(string str)
         {
@@ -186,10 +249,11 @@ namespace Server
                 byte[] data = new byte[1024 * 8];
                 if(stream.Position == stream.Length)
                 {
-                    socket.Send(GetByte("FileEnd"));
+                    socket.Send(GetByte("FileEnd"), GetByte("FileEnd").Length,SocketFlags.None);
                     return;
                 }
                 stream.Read(data, 0, data.Length);
+                Thread.Sleep(10);
                 socket.Send(data);
             }
         }
@@ -217,11 +281,21 @@ namespace Server
             return;
         }
 
-        private void BoradClient(string str)
+        private void BoradClient(string str, string Start = "")
         {
-            foreach(Socket socket in sockets)
+            if (Start == "")
             {
-                socket.Send(Encoding.UTF8.GetBytes(str));
+                foreach (Socket socket in sockets)
+                {
+                    socket.Send(Encoding.UTF8.GetBytes("Msg|" + str));
+                }
+            }
+            else
+            {
+                foreach (Socket socket in sockets)
+                {
+                    socket.Send(Encoding.UTF8.GetBytes(Start + str));
+                }
             }
         }
 
@@ -243,6 +317,9 @@ namespace Server
                 write.Close();
             }
             WriteLine($"服务器关闭");
+            Directory.CreateDirectory("log");
+            log = File.Create($"log\\{Now().Replace("/", ".").Replace(':', '_')}.svrlog");
+            log.Write(Encoding.UTF8.GetBytes(flog));
             log.Close();
         }
     }
@@ -250,10 +327,11 @@ namespace Server
     {
         static public void Main()
         {
+            
             try
             {
+                Console.WriteLine((string)((Dictionary<string, object>)((Dictionary<string, object>)((List<Dictionary<string, object>>)data["Blocks"])[0])["FontInfo"])["FontFamliy"]);
                 Server server = new Server();
-
                 server.Start();
             }
             catch (SocketException ex)

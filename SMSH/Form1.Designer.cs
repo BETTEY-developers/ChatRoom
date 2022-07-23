@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.MessageBox = new System.Windows.Forms.TextBox();
+            this.MessageBox = new System.Windows.Forms.RichTextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.Namef = new System.Windows.Forms.TextBox();
             this.Link = new System.Windows.Forms.Button();
@@ -40,9 +40,12 @@
             this.Port = new System.Windows.Forms.TextBox();
             this.synchronousPort = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.Emoji = new System.Windows.Forms.Button();
             this.SendFile = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.文件管理ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.访问我们的网站ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.SendRtf = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -60,13 +63,13 @@
             // 
             // MessageBox
             // 
+            this.MessageBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.MessageBox.Location = new System.Drawing.Point(6, 20);
-            this.MessageBox.Multiline = true;
             this.MessageBox.Name = "MessageBox";
             this.MessageBox.ReadOnly = true;
-            this.MessageBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.MessageBox.Size = new System.Drawing.Size(435, 270);
             this.MessageBox.TabIndex = 0;
+            this.MessageBox.Text = "";
             // 
             // label1
             // 
@@ -89,7 +92,7 @@
             // Link
             // 
             this.Link.Font = new System.Drawing.Font("宋体", 20F);
-            this.Link.Location = new System.Drawing.Point(23, 155);
+            this.Link.Location = new System.Drawing.Point(29, 155);
             this.Link.Name = "Link";
             this.Link.Size = new System.Drawing.Size(101, 42);
             this.Link.TabIndex = 3;
@@ -158,6 +161,8 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.SendRtf);
+            this.groupBox2.Controls.Add(this.Emoji);
             this.groupBox2.Controls.Add(this.SendFile);
             this.groupBox2.Controls.Add(this.MsgText);
             this.groupBox2.Controls.Add(this.Sed);
@@ -169,11 +174,21 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "发送框";
             // 
+            // Emoji
+            // 
+            this.Emoji.Location = new System.Drawing.Point(298, 20);
+            this.Emoji.Name = "Emoji";
+            this.Emoji.Size = new System.Drawing.Size(143, 33);
+            this.Emoji.TabIndex = 8;
+            this.Emoji.Text = "表情";
+            this.Emoji.UseVisualStyleBackColor = true;
+            this.Emoji.Click += new System.EventHandler(this.Emoji_Click);
+            // 
             // SendFile
             // 
             this.SendFile.Location = new System.Drawing.Point(6, 20);
             this.SendFile.Name = "SendFile";
-            this.SendFile.Size = new System.Drawing.Size(434, 33);
+            this.SendFile.Size = new System.Drawing.Size(143, 33);
             this.SendFile.TabIndex = 7;
             this.SendFile.Text = "发送文件";
             this.SendFile.UseVisualStyleBackColor = true;
@@ -182,7 +197,8 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.文件管理ToolStripMenuItem});
+            this.文件管理ToolStripMenuItem,
+            this.访问我们的网站ToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(688, 25);
@@ -195,6 +211,22 @@
             this.文件管理ToolStripMenuItem.Size = new System.Drawing.Size(68, 21);
             this.文件管理ToolStripMenuItem.Text = "文件管理";
             this.文件管理ToolStripMenuItem.Click += new System.EventHandler(this.文件管理ToolStripMenuItem_Click);
+            // 
+            // 访问我们的网站ToolStripMenuItem
+            // 
+            this.访问我们的网站ToolStripMenuItem.Name = "访问我们的网站ToolStripMenuItem";
+            this.访问我们的网站ToolStripMenuItem.Size = new System.Drawing.Size(104, 21);
+            this.访问我们的网站ToolStripMenuItem.Text = "访问我们的网站";
+            this.访问我们的网站ToolStripMenuItem.Click += new System.EventHandler(this.访问我们的网站ToolStripMenuItem_Click);
+            // 
+            // SendRtf
+            // 
+            this.SendRtf.Location = new System.Drawing.Point(154, 20);
+            this.SendRtf.Name = "SendRtf";
+            this.SendRtf.Size = new System.Drawing.Size(138, 33);
+            this.SendRtf.TabIndex = 9;
+            this.SendRtf.Text = "发送Rtf消息";
+            this.SendRtf.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -216,7 +248,6 @@
             this.Text = "聊天室 0.0.2版";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
@@ -229,7 +260,6 @@
         #endregion
 
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.TextBox MessageBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox Namef;
         private System.Windows.Forms.Button Link;
@@ -243,6 +273,10 @@
         private System.Windows.Forms.Button SendFile;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem 文件管理ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 访问我们的网站ToolStripMenuItem;
+        private System.Windows.Forms.RichTextBox MessageBox;
+        private System.Windows.Forms.Button Emoji;
+        private System.Windows.Forms.Button SendRtf;
     }
 }
 

@@ -1,0 +1,47 @@
+﻿body{
+    height:100%;
+}
+.head {
+    height: 80px;
+    width:100%;
+    background-color: gray;
+    display: flex;
+    flex-direction: column;
+    flex-flow: column;
+}
+.title{
+    display: flex;
+    font-size: 30px;
+    font-family: 'Microsoft YaHei UI';
+    flex-direction:column;
+    text-align: center;
+    color: lightgrey;
+}
+.content{
+    background-color: lightgray;
+}
+.left{
+    height:90%;
+    width:20%;
+    display: inline-block;
+}
+.contentItem{
+    height: 2em;
+    width: 100%;
+    font-family: 'Microsoft YaHei UI';
+    font-size: 17px;
+    font-style:initial;
+    text-align: center;
+    background-color:white;
+}
+.contentItem:hover{
+    background-color:gray;
+}
+.text{
+    text-align:center;
+}
+.right{
+    width:70%;
+    height: 90%;
+    display: inline-block;
+}

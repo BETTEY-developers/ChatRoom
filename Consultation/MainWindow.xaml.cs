@@ -21,24 +21,26 @@ namespace Consultation
     /// </summary>
     public partial class MainWindow : Window
     {
-        Storyboard broad = new Storyboard();
-        DoubleAnimation da = new DoubleAnimation();
+        Storyboard _storyboard;
+        DoubleAnimation DoubleAnimation;
 
         public MainWindow()
         {
             InitializeComponent();
-
+            WidTile.Content = "MS Marika 资讯广场";
+            _storyboard = new Storyboard();
+            DoubleAnimation = new DoubleAnimation();
+            DoubleAnimation.Duration = new Duration(TimeSpan.FromTicks(1000));
+            DoubleAnimation.From = 0.0;
+            DoubleAnimation.To = 1.0;
+            DoubleAnimation.AutoReverse = true;
+            DoubleAnimation.RepeatBehavior = RepeatBehavior.Forever;
+            _storyboard.Children.Add(DoubleAnimation);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
-        }
-
-        private void Button_MouseEnter(object sender, MouseEventArgs e)
-        {
-            Button button = (Button)e.Source;
-            
         }
 
         private void StackPanel_MouseDown(object sender, MouseButtonEventArgs e)
@@ -48,10 +50,10 @@ namespace Consultation
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-
+            Close();
         }
 
-        private void Button_MouseEnter_1(object sender, MouseEventArgs e)
+        private void Button_MouseLeave(object sender, MouseEventArgs e)
         {
 
         }

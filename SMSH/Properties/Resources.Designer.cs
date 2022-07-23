@@ -91,6 +91,40 @@ namespace SMSH.Properties {
         }
         
         /// <summary>
+        ///   查找类似 (1)&lt;U+1F600&gt;[笑,表情]
+        ///(2)&lt;U+1F603&gt;[大眼睛笑嘻嘻]
+        ///(3)&lt;U+1F604&gt;[笑着笑嘻嘻]
+        ///(4)&lt;U+1F601&gt;[灿烂的笑脸]
+        ///(5)&lt;U+1F606&gt;[笑着s着眼睛]
+        ///(6)&lt;U+1F605&gt;[汗水咧着嘴笑]
+        ///(7)&lt;U+1F923&gt;[在地上滚动笑]
+        ///(8)&lt;U+1F602&gt;[面对喜悦的眼泪]
+        ///(9)&lt;U+1F642&gt;[微笑]
+        ///(10)&lt;U+1F643&gt;[倒脸,倒]
+        ///(11)&lt;U+1F609&gt;[眨眼]
+        ///(12)&lt;U+1F60A&gt;[笑脸的笑脸]
+        ///(13)&lt;U+1F607&gt;[晕的笑脸]
+        ///(14)&lt;U+1F970&gt;[心的笑脸]
+        ///(15)&lt;U+1F60D&gt;[心眼笑脸]
+        ///(16)&lt;U+1F929&gt;[星光闪闪]
+        ///(17)&lt;U+1F618&gt;[飞吻,吻]
+        ///(18)&lt;U+1F617&gt;[接吻,亲亲]
+        ///(19)&lt;U+263A&gt;[微笑的面孔]
+        ///(20)&lt;U+1F61A&gt;[亲亲,亲嘴]
+        ///(21)&lt;U+1F619&gt;[带着微笑的眼睛接吻]
+        ///(22)&lt;U+1F972&gt;[含泪的笑脸]
+        ///(23)&lt;U+1F60B&gt;[吐舌头,吐舌]
+        ///(24)&lt;U+1F61B&gt;[面对舌头]
+        ///(25)&lt;U+1F61C&gt;[舌头眨着脸]
+        /// [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string Emoji {
+            get {
+                return ResourceManager.GetString("Emoji", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
         internal static System.Drawing.Bitmap Execute {

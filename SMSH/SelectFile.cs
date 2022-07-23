@@ -17,11 +17,11 @@ namespace SMSH
     public partial class SelectFile : Form
     {
         Stream stream;
-        Socket socket;
         const int BUFSIZE = 1024 * 8;
-        public SelectFile(Socket sock)
+        Group group;
+        public SelectFile(Group group)
         {
-            socket = sock;
+            this.group = group;
             InitializeComponent();
         }
 
@@ -36,32 +36,22 @@ namespace SMSH
                 SendTimingName.Text = Path.GetFileName(Openfile.FileName);
                 FileSize.Text = (stream.Length / 1024).ToString();
                 if (stream.Length / 1024 > 1048576)
+                {
                     Error.Show();
+                    stream.Close();
+                    return;
+                }
                 else
                     Error.Hide();
             }
             button1.Enabled = true;
+            stream.Close();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var sendst = Encoding.UTF8.GetBytes($"File:{{\"FileName\":\"{SendTimingName.Text}\",\"Introduction\":\"{FileIntroduction.Text}\",\"Size\":{stream.Length.ToString()},\"Guid\":\"{Form1.guid}\"}}");
-            socket.Send(sendst,sendst.Length,SocketFlags.None);
+            group.SendFileData(FilePath.Text, SendTimingName.Text, FileIntroduction.Text);
             button1.Enabled = false;
-            SendFileData();
-        }
-
-        private void SendFileData()
-        {
-            byte[] data = new byte[BUFSIZE];
-            if (stream.Position == stream.Length)
-            {
-                stream.Close();
-                return;
-            }
-            int len = stream.Read(data, 0, BUFSIZE);
-            socket.Send(data,len,SocketFlags.None);
-            SendFileData();
         }
     }
 }
